@@ -1,0 +1,29 @@
+=== RUBIK'S CUBE SOLVER - PERFORMANCE ANALYSIS ===
+
+Testing solver performance on complex scrambles:
+
+Test 1: "R U R' F' R U R' U' R' F R2 U' R'"
+  Result: SOLVER FAILED
+  Error: Solution verification failed - cube not solved.
+
+Test 2: "R U2 R' D' R U2 R' D"
+  Result: SUCCESS
+  Time: 17 ms
+  Solution length: 28 characters
+
+Test 3: "F R U' R' F' R U R'"
+  Result: SOLVER FAILED
+  Error: Solution verification failed - cube not solved.
+
+Test 4: "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R"
+  Result: SOLVER FAILED
+  Error: Solution verification failed - cube not solved.
+
+Test 5: "D R' D' R D' R' D R D' R' D R D' R' D R"
+  Result: SOLVER FAILED
+  Error: Solution verification failed - cube not solved.
+
+SUMMARY:
+  Successful solves: 1/5
+  Success rate: 20.000000%
+  Average time per solve: 7130 ms

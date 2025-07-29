@@ -1,0 +1,42 @@
+=== RUBIK'S CUBE SOLVER - SOLVING EXAMPLES ===
+
+EXAMPLE 1:
+Scramble: "R"
+Scrambled state coordinates:
+  Corner Orientation: 1494
+  Edge Orientation: 0
+  Is in G1: NO
+Solution found: "R R2 "
+Solution time: 1826 ms
+Verification: PASSED
+
+EXAMPLE 2:
+Scramble: "R U R' U'"
+Scrambled state coordinates:
+  Corner Orientation: 1530
+  Edge Orientation: 0
+  Is in G1: NO
+Solution found: "U R U' R R2 "
+Solution time: 1 ms
+Verification: PASSED
+
+EXAMPLE 3:
+Scramble: "F R U' R' F'"
+Scrambled state coordinates:
+  Corner Orientation: 1380
+  Edge Orientation: 2
+  Is in G1: NO
+Solution found: "F R U R' F F2 "
+Solution time: 2 ms
+Verification: PASSED
+
+EXAMPLE 4:
+Scramble: "R U2 R' D' R U' R' D"
+Scrambled state coordinates:
+  Corner Orientation: 1224
+  Edge Orientation: 0
+  Is in G1: NO
+Solution found: "R U R U' R' U' R R2 D B2 U' L2 D F2 U L2 D2 B2 "
+Solution time: 25823 ms
+Verification: PASSED
+

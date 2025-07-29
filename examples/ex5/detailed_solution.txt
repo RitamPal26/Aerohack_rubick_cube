@@ -1,0 +1,21 @@
+=== DETAILED SOLUTION EXAMPLE ===
+
+Scramble sequence: F U' R L' D B' U R
+Solution sequence: R' U' B D' L R' U F F2 
+
+Step-by-step analysis:
+1. Initial scrambled state coordinates:
+   Corner Orientation: 1209
+   Edge Orientation: 1132
+   Corner Permutation: 30639
+   Edge Permutation: 40319
+   Is in G1 subgroup: NO
+
+2. After applying solution:
+   Corner Orientation: 0
+   Edge Orientation: 0
+   Corner Permutation: 0
+   Edge Permutation: 0
+   Is in G1 subgroup: YES
+   Is solved: YES
+

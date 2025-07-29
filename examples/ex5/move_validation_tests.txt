@@ -1,0 +1,16 @@
+=== MOVE VALIDATION TESTS ===
+
+Testing individual moves for correctness (each move should be reversible):
+
+R + R': PASS
+L + L': PASS
+U + U': PASS
+D + D': PASS
+F + F': PASS
+B + B': PASS
+R' + R: PASS
+L' + L: PASS
+U' + U: PASS
+D' + D: PASS
+F' + F: PASS
+B' + B: PASS

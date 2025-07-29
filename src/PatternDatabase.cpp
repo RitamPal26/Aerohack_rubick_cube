@@ -41,48 +41,45 @@ PatternDatabase::PatternDatabase(const std::string &filename) : pdb_filename(fil
 
 void PatternDatabase::generate()
 {
+    // 1) initialize
     database.assign(PDB_SIZE, -1);
     std::queue<std::pair<Cube, int>> q;
     Cube solved_cube;
-
     long long solved_index = getHeuristic(solved_cube, true);
     database[solved_index] = 0;
     q.push({solved_cube, 0});
     int max_depth = 0;
 
-    const std::vector<std::string> all_moves = {"U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"};
-
+    // 2) BFS out to depth limit
+    const std::vector<std::string> all_moves =
+        {"U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"};
     while (!q.empty())
     {
-        Cube current_cube = q.front().first;
-        int current_depth = q.front().second;
+        auto [cube, depth] = q.front();
         q.pop();
-
-        if (current_depth > max_depth)
+        if (depth >= 11)
+            continue;
+        for (auto &m : all_moves)
         {
-            max_depth = current_depth;
-            std::cout << "Reached PDB depth: " << max_depth << std::endl;
-        }
-
-        if (current_depth >= 11)
-            continue; // Optimization: max depth for corners is 11
-
-        for (const auto &move : all_moves)
-        {
-            Cube next_cube = current_cube;
-            next_cube.applyMoves(move);
-            long long next_index = getHeuristic(next_cube, true);
-            if (database.at(next_index) == -1)
+            Cube next = cube;
+            next.applyMoves(m);
+            long long idx = getHeuristic(next, true);
+            if (database[idx] < 0)
             {
-                database[next_index] = current_depth + 1;
-                q.push({next_cube, current_depth + 1});
+                database[idx] = depth + 1;
+                q.push({next, depth + 1});
             }
         }
+        if (depth > max_depth)
+            std::cout << "Reached PDB depth " << depth << "\n";
     }
 
-    std::cout << "PDB Generation Complete. Saving to " << pdb_filename << "..." << std::endl;
-    std::ofstream pdb_file(pdb_filename, std::ios::binary);
-    pdb_file.write(reinterpret_cast<const char *>(database.data()), PDB_SIZE * sizeof(int));
+    // 3) save to disk
+    std::cout << "PDB generation complete. Saving to " << pdb_filename << " ...\n";
+    std::ofstream out(pdb_filename, std::ios::binary);
+    out.write(reinterpret_cast<char *>(database.data()),
+              database.size() * sizeof(int));
+    out.close();
 }
 
 // --- Main Heuristic Calculation ---
@@ -112,7 +109,7 @@ int PatternDatabase::getHeuristic(const Cube &cube, bool is_generating) const
         { // Find which piece it is
             std::vector<int> piece_colors = {corner_piece_def[j][0], corner_piece_def[j][1], corner_piece_def[j][2]};
             std::sort(piece_colors.begin(), piece_colors.end());
-            
+
             if (p_sorted[0] == piece_colors[0] && p_sorted[1] == piece_colors[1] && p_sorted[2] == piece_colors[2])
             {
                 p[i] = j; // Piece j is at location i

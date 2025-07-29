@@ -1,0 +1,43 @@
+=== RUBIK'S CUBE SOLVER - BASIC EXAMPLES ===
+
+1. SOLVED CUBE STATE:
+Up Face:
+  W W W 
+  W W W 
+  W W W 
+Right Face:
+  R R R 
+  R R O 
+  R R R 
+Front Face:
+  G G G 
+  G G G 
+  G G G 
+Down Face:
+  Y Y Y 
+  Y Y Y 
+  Y Y Y 
+Left Face:
+  O O O 
+  R O O 
+  O O O 
+Back Face:
+  B B B 
+  B B B 
+  B B B 
+
+Cube coordinates:
+  Corner Orientation Index: 0
+  Edge Orientation Index: 0
+  Corner Permutation Index: 0
+  Edge Permutation Index: 0
+  Is in G1 subgroup: YES
+  Is solved: YES
+
+2. AFTER SINGLE R MOVE:
+Move applied: R (clockwise right face turn)
+  Corner Orientation Index: 1494
+  Edge Orientation Index: 0
+  Is in G1 subgroup: NO
+  Is solved: NO
+

@@ -1,0 +1,28 @@
+=== RUBIK'S CUBE SOLVER - ALGORITHM INFORMATION ===
+
+Algorithm: Kociemba's Two-Phase Algorithm with IDA* Search
+
+PHASE 1 - Reach G1 Subgroup:
+  Goal: Orient all corners and edges (all orientations = 0)
+        AND place middle-slice edges in middle-slice positions
+  Moves: All 18 possible moves (U, U2, U', R, R2, R', etc.)
+  Heuristic: Pattern Database for corner and edge orientations
+  Max depth: 20 moves
+
+PHASE 2 - Solve within G1:
+  Goal: Achieve solved state using restricted move set
+  Moves: Only U, U2, U', D, D2, D', F2, B2, L2, R2
+  Heuristic: Pattern Database for corner and edge permutations
+  Max depth: 18 moves
+
+COORDINATE SYSTEMS:
+  Corner Orientation: 3^7 = 2,187 states
+  Edge Orientation: 2^11 = 2,048 states
+  Corner Permutation: 8! = 40,320 states
+  Edge Permutation (U/D slice): 8! = 40,320 states
+
+PATTERN DATABASES:
+  Used for admissible heuristics in IDA* search
+  Pre-computed and stored in corner_pdb.dat for persistence
+  Significantly reduces search space and improves performance
+

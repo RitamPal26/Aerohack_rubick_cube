@@ -1,96 +1,129 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <chrono>
 #include "Cube.h"
 #include "IDASolver.h"
 
-
-
-void test_move(const std::string &move_name, const std::string &move_sequence, const std::string &inverse_sequence)
-{
-    Cube test_cube; // Creates a solved cube
-
-    std::cout << "Testing move: " << move_name << "..." << std::endl;
-
-    // Apply the move
-    test_cube.applyMoves(move_sequence);
-
-    // Apply the inverse move
-    test_cube.applyMoves(inverse_sequence);
-
-    if (test_cube.isSolved())
-    {
-        std::cout << "  [✅] SUCCESS: " << move_name << " is reversible." << std::endl;
+void generateExampleOutput(const std::string &filename, const std::string &content) {
+    std::ofstream file("examples/" + filename);
+    if (file.is_open()) {
+        file << content;
+        file.close();
+        std::cout << "Generated example: examples/" << filename << std::endl;
+    } else {
+        std::cout << "Error: Could not create examples/" << filename << std::endl;
     }
-    else
-    {
-        std::cout << "  [❌] FAILURE: " << move_name << " is not reversible. Check implementation." << std::endl;
-        // Optional: print the cube state to see what went wrong
-        // test_cube.print();
+}
+
+std::string cubeStateToString(const Cube& cube) {
+    std::string result = "";
+    std::array<int, 54> state = cube.getState();
+    const char *face_names[] = {"Up", "Right", "Front", "Down", "Left", "Back"};
+    const char color_letters[] = {'W', 'Y', 'G', 'B', 'O', 'R'};
+    
+    for (int face = 0; face < 6; face++) {
+        result += face_names[face] + std::string(":\n");
+        for (int row = 0; row < 3; row++) {
+            result += "  ";
+            for (int col = 0; col < 3; col++) {
+                int pos = face * 9 + row * 3 + col;
+                result += color_letters[state[pos]];
+                result += " ";
+            }
+            result += "\n";
+        }
+    }
+    return result;
+}
+
+void generateDetailedExample(int exampleNum, const std::string& scramble, IDASolver& solver) {
+    std::string folder = "ex" + std::to_string(exampleNum);
+    std::string content = "";
+    
+    content += "=== EXAMPLE " + std::to_string(exampleNum) + " - COMPLETE SOLUTION WALKTHROUGH ===\n\n";
+    
+    // Create scrambled cube
+    Cube cube;
+    content += "1. INITIAL SOLVED STATE:\n";
+    content += cubeStateToString(cube);
+    content += "Cube state: SOLVED\n\n";
+    
+    // Apply scramble
+    cube.applyMoves(scramble);
+    content += "2. SCRAMBLE APPLIED: \"" + scramble + "\"\n";
+    content += cubeStateToString(cube);
+    content += "Cube state: SCRAMBLED\n";
+    content += "Coordinates:\n";
+    content += "  Corner Orientation: " + std::to_string(cube.getCornerOrientationIndex()) + "\n";
+    content += "  Edge Orientation: " + std::to_string(cube.getEdgeOrientationIndex()) + "\n";
+    content += "  Corner Permutation: " + std::to_string(cube.getCornerPermutationIndex()) + "\n";
+    content += "  Edge Permutation: " + std::to_string(cube.getEdgePermutationIndex()) + "\n";
+    content += "  Is in G1 subgroup: " + std::string(cube.isInG1() ? "YES" : "NO") + "\n\n";
+    
+    // Solve
+    auto start_time = std::chrono::high_resolution_clock::now();
+    std::string solution = solver.solve(cube);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    
+    content += "3. SOLVER ANALYSIS:\n";
+    if (solution.find("failed") != std::string::npos || solution.find("Error") != std::string::npos) {
+        content += "Solution: FAILED\n";
+        content += "Error: " + solution + "\n\n";
+    } else {
+        content += "Solution found: \"" + solution + "\"\n";
+        content += "Solution time: " + std::to_string(duration.count()) + " ms\n";
+        content += "Solution length: " + std::to_string(solution.length()) + " characters\n\n";
+        
+        // Apply solution and verify
+        Cube solved_cube = cube;
+        solved_cube.applyMoves(solution);
+        
+        content += "4. FINAL STATE AFTER APPLYING SOLUTION:\n";
+        content += cubeStateToString(solved_cube);
+        content += "Cube state: " + std::string(solved_cube.isSolved() ? "SOLVED" : "NOT SOLVED") + "\n";
+        content += "Verification: " + std::string(solved_cube.isSolved() ? "PASSED" : "FAILED") + "\n\n";
+        
+        content += "5. SUMMARY:\n";
+        content += "  Scramble: " + scramble + "\n";
+        content += "  Solution: " + solution + "\n";
+        content += "  Total moves in solution: " + std::to_string(solution.length()) + " characters\n";
+        content += "  Solving time: " + std::to_string(duration.count()) + " ms\n";
+        content += "  Result: " + std::string(solved_cube.isSolved() ? "SUCCESS" : "FAILED") + "\n";
+    }
+    
+    // Write to file
+    std::ofstream file("examples/" + folder + "/complete_solution.txt");
+    if (file.is_open()) {
+        file << content;
+        file.close();
+        std::cout << "Generated detailed example: examples/" << folder << "/complete_solution.txt" << std::endl;
     }
 }
 
 int main()
 {
     std::cout << "Creating a 3x3x3 Rubik's Cube." << std::endl;
-    // Correct: Use the default constructor
-    Cube my_cube;
+    std::cout << "Generating output examples in ./examples/ folder..." << std::endl;
 
-    std::string scramble_moves = "F U' R L' D B' U R";
-    my_cube.applyMoves(scramble_moves);
-
-    std::cout << "\n--- Scrambled Cube State ---" << std::endl;
-    my_cube.print();
-
-    std::cout << "\n--- Starting Solver ---" << std::endl;
     IDASolver solver;
+
+    // Generate detailed examples with complete cube states
+    std::cout << "\n--- Generating Detailed Examples ---" << std::endl;
     
-    // Debug: Check if cube is already solved before solving
-    std::cout << "DEBUG: Cube solved before solving? " << (my_cube.isSolved() ? "YES" : "NO") << std::endl;
+    std::vector<std::string> detailed_scrambles = {
+        "R U R' U'",                    // Simple 4-move sequence
+        "F R U' R' F'",                 // T-permutation setup  
+        "R U2 R' D' R U' R' D",        // Complex 8-move sequence
+        "U R U' L' U R' U' L"          // Cross-pattern sequence
+    };
     
-    std::string solution = solver.solve(my_cube);
-
-    std::cout << "\n--- Solution Found ---" << std::endl;
-    std::cout << "Scramble Moves: " << scramble_moves << std::endl;
-    std::cout << "Solution Path: " << solution << std::endl;
-    std::cout << "Solution length: " << solution.length() << " characters" << std::endl;
-
-    // Debug: Create a copy to test solution on
-    Cube test_cube = my_cube;
-    std::cout << "\nDEBUG: Applying solution to test cube..." << std::endl;
-    test_cube.applyMoves(solution);
-    std::cout << "\n--- Final Cube State After Applying Solution ---" << std::endl;
-    test_cube.print();
-
-    if (test_cube.isSolved())
-    {
-        std::cout << "\nVerification successful: The cube is solved!" << std::endl;
-    }
-    else
-    {
-        std::cout << "\nVerification failed: The cube is NOT solved." << std::endl;
-        std::cout << "DEBUG: This indicates a problem with either:" << std::endl;
-        std::cout << "  1. The solver algorithm" << std::endl;
-        std::cout << "  2. The move application" << std::endl;
-        std::cout << "  3. The solution parsing" << std::endl;
+    for (size_t i = 0; i < detailed_scrambles.size(); i++) {
+        generateDetailedExample(i + 1, detailed_scrambles[i], solver);
     }
 
-    std::cout << "\n--- Testing Individual Moves ---" << std::endl;
-    // Test clockwise moves
-    test_move("R", "R", "R'");
-    test_move("L", "L", "L'");
-    test_move("U", "U", "U'");
-    test_move("D", "D", "D'");
-    test_move("F", "F", "F'");
-    test_move("B", "B", "B'");
-
-    std::cout << "\n";
-
-    // Test counter-clockwise (prime) moves
-    test_move("R'", "R'", "R");
-    test_move("L'", "L'", "L");
-    test_move("U'", "U'", "U");
-    test_move("D'", "D'", "D");
-    test_move("F'", "F'", "F");
-    test_move("B'", "B'", "B");
+    std::cout << "\n=== Detailed example files generated in ./examples/ex1, ex2, ex3, ex4 folders ===" << std::endl;
 
     return 0;
 }

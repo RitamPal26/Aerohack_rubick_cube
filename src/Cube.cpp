@@ -30,11 +30,11 @@ const int edge_colors[12][2] = {
 
 // Maps the 8 corner SLOTS to their 3 facelet positions on a standard U-R-F-D-L-B unfolded cube
 const int corner_facelets[8][3] = {
-    {8, 47, 18}, {6, 19, 38}, {0, 36, 29}, {2, 27, 46}, {11, 24, 48}, {9, 41, 25}, {15, 33, 42}, {17, 51, 34}};
+    {8, 9, 20}, {6, 18, 38}, {0, 36, 47}, {2, 45, 11}, {29, 26, 15}, {27, 44, 24}, {33, 53, 42}, {35, 17, 51}};
 
-// Maps the 12 edge SLOTS to their 2 facelet positions  
+// Maps the 12 edge SLOTS to their 2 facelet positions
 const int edge_facelets[12][2] = {
-    {5, 10}, {7, 19}, {3, 37}, {1, 46}, {28, 16}, {30, 25}, {34, 43}, {32, 52}, {12, 21}, {39, 23}, {50, 41}, {48, 14}};
+    {5, 10}, {7, 19}, {3, 37}, {1, 46}, {32, 16}, {28, 25}, {30, 43}, {34, 52}, {23, 12}, {21, 41}, {48, 14}, {50, 39}};
 // Helper for permutation indexing
 long long factorial(int n)
 {
@@ -287,17 +287,25 @@ int Cube::getCornerPermutationIndex() const
     return index;
 }
 
-// Phase 2: U/D Slice Edge Permutation (Permutation of pieces 0-7 within slots 0-7)
+// Phase 2: Edge Permutation (middle slice edges in G1)
 int Cube::getEdgePermutationIndex() const
 {
+    // In G1, edges 8,9,10,11 should contain pieces 8,9,10,11 (middle slice pieces)
+    // First verify we're actually in G1
+    for (int i = 8; i < 12; i++) {
+        if (ep[i] < 8 || ep[i] > 11) {
+            // Not in G1 - return invalid index  
+            return 40319;
+        }
+    }
+    
+    // We're in G1, so compute permutation index for edges 0-7 only
+    // (edges 8-11 permutation will be handled separately if needed)
     int index = 0;
-    for (int i = 0; i < 8; i++)
-    {
+    for (int i = 0; i < 8; i++) {
         int permutations = 0;
-        for (int j = i + 1; j < 8; j++)
-        {
-            if (ep[i] > ep[j])
-            {
+        for (int j = i + 1; j < 8; j++) {
+            if (ep[i] > ep[j]) {
                 permutations++;
             }
         }
@@ -404,17 +412,31 @@ void Cube::print() const
 
 bool Cube::isInG1() const
 {
+    // Check corner orientations
     for (int orientation : co)
     {
         if (orientation != 0)
             return false;
     }
+    
+    // Check edge orientations
     for (int orientation : eo)
     {
         if (orientation != 0)
             return false;
     }
-    return true;
+    
+    // Check that middle-slice edges (FR, FL, BL, BR) are in middle-slice positions
+    // In G1, edges 8, 9, 10, 11 must contain pieces 8, 9, 10, 11 (in any order)
+    bool middle_slice_correct = true;
+    for (int i = 8; i < 12; i++) {
+        if (ep[i] < 8 || ep[i] > 11) {
+            middle_slice_correct = false;
+            break;
+        }
+    }
+    
+    return middle_slice_correct;
 }
 
 // Convert internal representation to 54-sticker state array

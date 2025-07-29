@@ -1,0 +1,101 @@
+=== EXAMPLE 1 - COMPLETE SOLUTION WALKTHROUGH ===
+
+1. INITIAL SOLVED STATE:
+Up:
+  W W W 
+  W W W 
+  W W W 
+Right:
+  R R R 
+  R R O 
+  R R R 
+Front:
+  G G G 
+  G G G 
+  G G G 
+Down:
+  Y Y Y 
+  Y Y Y 
+  Y Y Y 
+Left:
+  O O O 
+  R O O 
+  O O O 
+Back:
+  B B B 
+  B B B 
+  B B B 
+Cube state: SOLVED
+
+2. SCRAMBLE APPLIED: "R U R' U'"
+Up:
+  W W B 
+  W W B 
+  W W R 
+Right:
+  Y R O 
+  R R O 
+  R R R 
+Front:
+  G G G 
+  G G G 
+  G G W 
+Down:
+  Y Y G 
+  Y Y Y 
+  Y Y Y 
+Left:
+  B O O 
+  B O O 
+  O O O 
+Back:
+  W R R 
+  B B W 
+  B B B 
+Cube state: SCRAMBLED
+Coordinates:
+  Corner Orientation: 1530
+  Edge Orientation: 0
+  Corner Permutation: 21144
+  Edge Permutation: 40319
+  Is in G1 subgroup: NO
+
+3. SOLVER ANALYSIS:
+Solution found: "U R U' R R2 "
+Solution time: 1720 ms
+Solution length: 12 characters
+
+4. FINAL STATE AFTER APPLYING SOLUTION:
+Up:
+  W W W 
+  W W W 
+  W W W 
+Right:
+  R R R 
+  R R O 
+  R R R 
+Front:
+  G G G 
+  G G G 
+  G G G 
+Down:
+  Y Y Y 
+  Y Y Y 
+  Y Y Y 
+Left:
+  O O O 
+  R O O 
+  O O O 
+Back:
+  B B B 
+  B B B 
+  B B B 
+Cube state: SOLVED
+Verification: PASSED
+
+5. SUMMARY:
+  Scramble: R U R' U'
+  Solution: U R U' R R2 
+  Total moves in solution: 12 characters
+  Solving time: 1720 ms
+  Result: SUCCESS
