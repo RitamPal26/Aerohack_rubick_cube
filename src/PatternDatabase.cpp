@@ -17,7 +17,7 @@ const int CORNER_PERM_SIZE = 40320;
 const int CORNER_ORIENT_SIZE = 2187;
 const int PDB_SIZE = CORNER_PERM_SIZE * CORNER_ORIENT_SIZE;
 
-long long factorial(int n)
+static long long factorial(int n)
 {
     return (n < 2) ? 1 : n * factorial(n - 1);
 }
@@ -110,7 +110,10 @@ int PatternDatabase::getHeuristic(const Cube &cube, bool is_generating) const
 
         for (int j = 0; j < 8; ++j)
         { // Find which piece it is
-            if (p_sorted[0] == corner_piece_def[j][1] && p_sorted[1] == corner_piece_def[j][2] && p_sorted[2] == corner_piece_def[j][0])
+            std::vector<int> piece_colors = {corner_piece_def[j][0], corner_piece_def[j][1], corner_piece_def[j][2]};
+            std::sort(piece_colors.begin(), piece_colors.end());
+            
+            if (p_sorted[0] == piece_colors[0] && p_sorted[1] == piece_colors[1] && p_sorted[2] == piece_colors[2])
             {
                 p[i] = j; // Piece j is at location i
                 break;

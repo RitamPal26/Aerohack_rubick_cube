@@ -30,9 +30,9 @@ const int edge_colors[12][2] = {
 
 // Maps the 8 corner SLOTS to their 3 facelet positions on a standard U-R-F-D-L-B unfolded cube
 const int corner_facelets[8][3] = {
-    {8, 9, 20}, {6, 18, 38}, {0, 36, 47}, {2, 45, 11}, {29, 26, 15}, {27, 44, 24}, {33, 53, 42}, {35, 17, 51}};
+    {8, 47, 18}, {6, 19, 38}, {0, 36, 29}, {2, 27, 46}, {11, 24, 48}, {9, 41, 25}, {15, 33, 42}, {17, 51, 34}};
 
-// Maps the 12 edge SLOTS to their 2 facelet positions
+// Maps the 12 edge SLOTS to their 2 facelet positions  
 const int edge_facelets[12][2] = {
     {5, 10}, {7, 19}, {3, 37}, {1, 46}, {28, 16}, {30, 25}, {34, 43}, {32, 52}, {12, 21}, {39, 23}, {50, 41}, {48, 14}};
 // Helper for permutation indexing
@@ -56,7 +56,9 @@ const Cube &getMoveU()
     if (!init)
     {
         move.cp = {3, 0, 1, 2, 4, 5, 6, 7};               // Permutation of corner slots for U
+        move.co = {0, 0, 0, 0, 0, 0, 0, 0};               // No corner orientation change for U
         move.ep = {3, 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11}; // Permutation of edge slots for U
+        move.eo = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   // No edge orientation change for U
         init = true;
     }
     return move;
@@ -70,7 +72,8 @@ const Cube &getMoveR()
     {
         move.cp = {4, 1, 2, 0, 7, 5, 6, 3};
         move.co = {2, 0, 0, 1, 1, 0, 0, 2};
-        move.ep = {8, 1, 2, 3, 0, 5, 6, 7, 4, 9, 10, 11};
+        move.ep = {11, 1, 2, 3, 8, 5, 6, 7, 0, 9, 10, 4};  // Fixed: R move edge cycle 0→8→4→11→0
+        move.eo = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   // No edge orientation change for R
         init = true;
     }
     return move;
@@ -84,7 +87,7 @@ const Cube &getMoveF()
     {
         move.cp = {1, 5, 2, 3, 0, 4, 6, 7};
         move.co = {1, 2, 0, 0, 2, 1, 0, 0};
-        move.ep = {0, 9, 2, 3, 4, 1, 6, 7, 8, 5, 10, 11};
+        move.ep = {0, 9, 2, 3, 4, 8, 6, 7, 5, 1, 10, 11};  // Fixed: F move edge cycle 1→8→5→9→1
         move.eo = {0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0};
         init = true;
     }
@@ -98,7 +101,9 @@ const Cube &getMoveD()
     if (!init)
     {
         move.cp = {0, 1, 2, 3, 5, 6, 7, 4};
+        move.co = {0, 0, 0, 0, 0, 0, 0, 0};               // No corner orientation change for D
         move.ep = {0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11};
+        move.eo = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   // No edge orientation change for D
         init = true;
     }
     return move;
@@ -112,7 +117,8 @@ const Cube &getMoveL()
     {
         move.cp = {0, 2, 6, 3, 4, 1, 5, 7};
         move.co = {0, 1, 2, 0, 0, 2, 1, 0};
-        move.ep = {0, 1, 10, 3, 4, 5, 2, 7, 8, 9, 6, 11};
+        move.ep = {0, 1, 9, 3, 4, 5, 10, 7, 8, 6, 2, 11};  // Fixed: L move edge cycle 2→10→6→9→2
+        move.eo = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};   // No edge orientation change for L
         init = true;
     }
     return move;
@@ -126,7 +132,7 @@ const Cube &getMoveB()
     {
         move.cp = {0, 1, 3, 7, 4, 5, 2, 6};
         move.co = {0, 0, 1, 2, 0, 0, 2, 1};
-        move.ep = {0, 1, 2, 11, 4, 5, 6, 3, 8, 9, 10, 7};
+        move.ep = {0, 1, 2, 11, 4, 5, 6, 10, 8, 9, 3, 7};  // Fixed: B move edge cycle 3→10→7→11→3
         move.eo = {0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1};
         init = true;
     }
@@ -409,4 +415,47 @@ bool Cube::isInG1() const
             return false;
     }
     return true;
+}
+
+// Convert internal representation to 54-sticker state array
+std::array<int, 54> Cube::getState() const
+{
+    std::array<int, 54> state;
+    
+    // Initialize with solved state colors
+    // Face order: U(0-8), R(9-17), F(18-26), D(27-35), L(36-44), B(45-53)
+    for (int i = 0; i < 9; i++) state[i] = WHITE;       // U face
+    for (int i = 9; i < 18; i++) state[i] = RED;        // R face  
+    for (int i = 18; i < 27; i++) state[i] = GREEN;     // F face
+    for (int i = 27; i < 36; i++) state[i] = YELLOW;    // D face
+    for (int i = 36; i < 45; i++) state[i] = ORANGE;    // L face
+    for (int i = 45; i < 54; i++) state[i] = BLUE;      // B face
+    
+    // Apply corner permutations and orientations
+    for (int i = 0; i < 8; i++) {
+        int piece = cp[i];
+        int orientation = co[i];
+        
+        // Apply corner colors based on piece and orientation
+        for (int j = 0; j < 3; j++) {
+            int sticker_pos = corner_facelets[i][j];
+            int color_index = (j + orientation) % 3;
+            state[sticker_pos] = corner_colors[piece][color_index];
+        }
+    }
+    
+    // Apply edge permutations and orientations  
+    for (int i = 0; i < 12; i++) {
+        int piece = ep[i];
+        int orientation = eo[i];
+        
+        // Apply edge colors based on piece and orientation
+        for (int j = 0; j < 2; j++) {
+            int sticker_pos = edge_facelets[i][j];
+            int color_index = (j + orientation) % 2;
+            state[sticker_pos] = edge_colors[piece][color_index];
+        }
+    }
+    
+    return state;
 }

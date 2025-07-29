@@ -5,6 +5,16 @@
 #include <vector>
 #include <array>
 
+// Color constants for cube faces
+enum Color {
+    WHITE = 0,
+    YELLOW = 1,
+    GREEN = 2,
+    BLUE = 3,
+    ORANGE = 4,
+    RED = 5
+};
+
 class Cube
 {
 public:
@@ -25,6 +35,7 @@ public:
     bool isSolved() const;
     void print() const; // Needs to be adapted from your original
     void scramble();
+    std::array<int, 54> getState() const; // Get cube state as 54 sticker array
 
     // --- Coordinate (Indexing) Functions ---
     int getCornerOrientationIndex() const;

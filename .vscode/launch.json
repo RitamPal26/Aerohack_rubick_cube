@@ -2,14 +2,28 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "(GDB) Launch Rubik's Solver",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/rubiks_solver_debug.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/Mingw64/mingw64/bin/gdb.exe",
+      "preLaunchTask": "Build Solver (Debug)"
+    },
+    {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/KIIT/Desktop/Studies/aerohack/code_implementation",
-      "program": "c:/Users/KIIT/Desktop/Studies/aerohack/code_implementation/build/Debug/outDebug",
+      "cwd": "c:/Users/KIIT/Desktop/Studies/aerohack/code_implementation/src",
+      "program": "c:/Users/KIIT/Desktop/Studies/aerohack/code_implementation/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
