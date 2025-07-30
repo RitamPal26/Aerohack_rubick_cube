@@ -21,8 +21,9 @@ A C++ implementation of an algorithm to solve a 3x3 Rubik's Cube, developed for 
 
 This solver implements **Herbert Kociemba's two-phase algorithm**, a powerful method that finds near-optimal solutions to the Rubik's Cube. The algorithm dramatically reduces the complex problem into two more manageable steps, or phases.
 
-> **Why a Two-Phase Algorithm?**
-> A direct approach to solving the cube requires searching through a massive number of states (\~$4.3 \\times 10^{19}$). The two-phase algorithm breaks this down by first reaching an intermediate state before proceeding to the final solved state.
+Why a Two-Phase Algorithm?
+
+A direct approach to solving the cube requires searching through a massive number of states (~4.3×1019). The two-phase algorithm breaks this down by first reaching an intermediate state before proceeding to the final solved state.
 
 #### **Phase 1: Reach the G1 Subgroup**
 
