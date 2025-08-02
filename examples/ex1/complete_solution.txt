@@ -62,7 +62,7 @@ Coordinates:
 
 3. SOLVER ANALYSIS:
 Solution found: "U R U' R R2 "
-Solution time: 1720 ms
+Solution time: 3280 ms
 Solution length: 12 characters
 
 4. FINAL STATE AFTER APPLYING SOLUTION:
@@ -97,5 +97,5 @@ Verification: PASSED
   Scramble: R U R' U'
   Solution: U R U' R R2 
   Total moves in solution: 12 characters
-  Solving time: 1720 ms
+  Solving time: 3280 ms
   Result: SUCCESS

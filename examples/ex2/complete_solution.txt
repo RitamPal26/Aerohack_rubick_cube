@@ -62,7 +62,7 @@ Coordinates:
 
 3. SOLVER ANALYSIS:
 Solution found: "F R U R' F F2 "
-Solution time: 3 ms
+Solution time: 5 ms
 Solution length: 14 characters
 
 4. FINAL STATE AFTER APPLYING SOLUTION:
@@ -97,5 +97,5 @@ Verification: PASSED
   Scramble: F R U' R' F'
   Solution: F R U R' F F2 
   Total moves in solution: 14 characters
-  Solving time: 3 ms
+  Solving time: 5 ms
   Result: SUCCESS
